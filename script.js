@@ -1,10 +1,45 @@
-//Project 01_06_01
+//Project 01_06_02
 //Author: Nathan Howard
 //Date: 8.15.18
 
 "use strict";
 
 var formValidity = true;
+
+//remove fallback placeholder text
+function zeroPlaceholder() {
+    var addressBox = document.getElementById("addrinput");
+    addressBox.style.color = "black";
+    if (addressBox.value === addressBox.placeholder) {
+        addressBox.value = "";
+    }
+}
+
+//restore placeholder text if box contains no user entry
+function checkPlaceholder() {
+    var addressBox = document.getElementById("addrinput");
+    if (addressBox.value === "") {
+        addressBox.style.color = "rgb(178, 184, 183)";
+        addressBox.value = addressBox.placeholder;
+    }
+}
+
+//add placeholder text for browsers that don't support placeholder
+function generatePlaceholder() {
+    if (!Modernizr.input.placeholder) {
+        var addressBox = document.getElementById("addrinput");
+        addressBox.value = addressBox.placeholder;
+        addressBox.style.color = "rgb(178, 184, 183)"
+        if (addressBox.addEventListener) {
+            addressBox.addEventListener("focus", zeroPlaceholder, false);
+            addressBox.addEventListener("blur", checkPlaceholder, false);
+        }
+        else if (addressBox.attachEvent) {
+            addressBox.attachEvent("onfocus", zeroPlaceholder);
+            addressBox.attachEvent("blur", zeroPlaceholder);
+        }
+    }
+}
 
 //function to validate required inputs
 function validateRequired() {
@@ -54,6 +89,12 @@ function validateForm(evt) {
     }
 }
 
+//function to set up page
+function setUpPage() {
+    createEventListeners();
+    generatePlaceholder();
+}
+
 //function to load in eventlisteners
 function createEventListeners() {
     if (window.addEventListener) {
@@ -64,7 +105,7 @@ function createEventListeners() {
 }
 
 if (window.addEventListener) {
-    window.addEventListener("load", createEventListeners, false);
+    window.addEventListener("load", setUpPage, false);
 } else if (window.attachEvent) {
-    window.attachEvent("onload", createEventListeners);
+    window.attachEvent("onload", setUpPage);
 }
